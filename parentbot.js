@@ -11,9 +11,10 @@ const fs = require('fs');
 const crypto = require('crypto');
 const readline = require('readline');
 
-const ParentBot = function (username, password, options) {
+const ParentBot = function (botname, username, password, options) {
     const that = this;
 
+    this.botname = botname;
     this.username = username;
     this.password = password;
     this.options = options || {};
@@ -51,7 +52,7 @@ const ParentBot = function (username, password, options) {
             new (Winston.transports.Console)({
                 colorize: true,
                 timestamp: true,
-                label: that.username,
+                label: that.botname,
                 level: 'silly',
                 json: false
             }),
@@ -162,7 +163,7 @@ prototype._onLogOnResponse = function logOnResponseCallback(response) {
     if (response.eresult === Steam.EResult.OK) {
         this.logger.info('Logged into Steam!');
         this.steamFriends.setPersonaState(Steam.EPersonaState = 1);
-    this.steamUser.gamesPlayed({ "games_played": [{ "game_id": (this.gamePlayed ? parseInt(this.gamePlayed) : null) }] });
+        this.steamUser.gamesPlayed({ "games_played": [{ "game_id": (this.gamePlayed ? parseInt(this.gamePlayed) : null) }] });
         this.steamWebLogon.webLogOn((webSessionID, cookies) => {
             if (this.confirmationInterval && this.identitySecret) {
                 this.community.startConfirmationChecker(this.confirmationInterval, this.identitySecret);
@@ -176,7 +177,6 @@ prototype._onLogOnResponse = function logOnResponseCallback(response) {
                 if(e) {
                     if(parseInt(e.eresult) === 2) {
                         this.logger.error('Failed to enable two factor. Check if you have a phone number enabled for this account.');
-                        this.logger.error(e.stack);
                     }
                     else if(parseInt(e.eresult) === 29) {
                         this.logger.warn('Already have 2FA enabled');
@@ -201,6 +201,7 @@ prototype._onLogOnResponse = function logOnResponseCallback(response) {
                 }, (e, api) => {
                     if (e) this.logger.error('Error getting API key: ' + e);
                     else {
+                        this.logger.warn('API Key was not previously set up, got a new one: ' + api);
                         this.apikey = api;
                         this.offers.setup({
                           sessionID: webSessionID,
@@ -218,6 +219,7 @@ prototype._onLogOnResponse = function logOnResponseCallback(response) {
               });
             }
             this.logger.info('Logged into Steam web');
+            this._onWebLogOn()
         });
     }
     else {
@@ -236,9 +238,7 @@ prototype.finalizeTwoFactor = function finalizeCallback(res) {
                 if(e.message === 'Invalid activation code') {
                     this.logger.error('Invalid activation code, please try again');
                     this.finalizeTwoFactor(res);
-                }
-                else {
-                    this.logger.error(e.stack);
+                    return;
                 }
             }
             else {
@@ -275,4 +275,8 @@ prototype._onFriend = function friendCallback(steamID, relationship) {
         this.steamFriends.sendMessage(steamID, 'Hi, thanks for adding me! If you are getting this message, it means that my ' +
                                                 'owner hasn\'t configured me properly. Annoy them with messages until they do!');
     }
+}
+
+prototype._onWebLogOn = function onWebLogonCallback() {
+    this.logger.info('Logged into Steam web');
 }
