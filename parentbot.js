@@ -262,19 +262,23 @@ prototype._onUpdateMachineAuth = function updateMachineAuthCallback(response, ca
 }
 
 prototype._onFriendMsg = function friendMsgCallback(steamID, message, type) {
+    /*
     if (type === Steam.EChatEntryType.ChatMsg) {
         this.logger.info('Message from ' + steamID + ': ' + message);
         this.steamFriends.sendMessage(steamID, 'Hi, thanks for messaging me! If you are getting this message, it means that my ' +
                                                 'owner hasn\'t configured me properly. Annoy them with messages until they do!');
     }
+    */
 }
 
 prototype._onFriend = function friendCallback(steamID, relationship) {
+    /*
     if (relationship === Steam.EFriendRelationship.RequestRecipient) {
         this.steamFriends.addFriend(steamID);
         this.steamFriends.sendMessage(steamID, 'Hi, thanks for adding me! If you are getting this message, it means that my ' +
                                                 'owner hasn\'t configured me properly. Annoy them with messages until they do!');
     }
+    */
 }
 
 prototype._onWebLogOn = function onWebLogonCallback() {
