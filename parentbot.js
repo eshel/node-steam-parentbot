@@ -22,7 +22,6 @@ const ParentBot = function (botname, username, password, options) {
     this.service = this.options.service || undefined;
     this.apikey = this.options.apikey || undefined;
     this.sentryfile = this.options.sentryfile || this.username + '.sentry';
-    this.logfile = this.options.logfile || this.username + '.log';
     this.guardCode = this.options.guardCode || undefined;
     this.twoFactorCode = this.options.twoFactorCode || undefined;
     this.sharedSecret = this.options.sharedSecret || undefined;
@@ -54,13 +53,7 @@ const ParentBot = function (botname, username, password, options) {
                 timestamp: true,
                 label: that.botname,
                 level: 'silly',
-                json: false
-            }),
-            new (Winston.transports.File)({
-                level: 'debug',
-                timestamp: true,
-                json: false,
-                filename: that.logfile
+                json: true
             })
         ]
     });

@@ -26,7 +26,6 @@ var Bot = new ChildBot(username, password);
 var Bot = new ChildBot(username, password, {
 	apikey: '1234567890', //steam api key, will be registered automatically if one isn't supplied
 	sentryfile: 'username.sentry', //sentry file that stores steamguard info, defaults to username.sentry
-	logfile: 'username.log', //filename to log stuff to, defaults to username.log
 	guardCode: 'XXXXX', //steam guard code, only needed if you get error 63 when logging in, can remove after sentry is generated
 	twoFactorCode: 'XXXXX', //two factor authentication code, only needed if you're using the mobile 2FA
 	sharedSecret: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX=', //shared secret, needed to automatically generate twoFactorCode
