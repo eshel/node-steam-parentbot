@@ -49,11 +49,13 @@ const ParentBot = function (botname, username, password, options) {
     this.logger = new (Winston.Logger)({
         transports: [
             new (Winston.transports.Console)({
-                colorize: true,
                 timestamp: true,
                 label: that.botname,
-                level: 'silly',
-                json: true
+                level: 'verbose',
+                json: true,
+                stringify: function (obj) {
+                    return JSON.stringify(obj);
+                }
             })
         ]
     });
