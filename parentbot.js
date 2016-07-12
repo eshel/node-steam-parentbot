@@ -98,6 +98,9 @@ function busySleep(time, callback) {
     callback();
 }
 
+function random (low, high) {
+    return Math.random() * (high - low) + low;
+}
 
 prototype.connect = function connectCallback() {
     this.steamClient.connect();
@@ -233,9 +236,9 @@ prototype._onLogOnResponse = function logOnResponseCallback(response) {
             this.logger.warn('Please provide the steamguard code sent to your email at ' + response.email_domain);
             process.exit(63);
         } else if (response.eresult === 5) {
-            this.logger.warn('Received logon EResult=5 (rate limiting?). Waiting in order to restart');
-            busySleep(30000, function() {
-                this.logger.warn('restart timeout expired, exiting');
+            waitTimeout = random(45000, 75000);
+            this.logger.warn('Received logon EResult=5 (rate limiting?). Waiting ' + waitTimeout + 'ms in order to restart');
+            busySleep(waitTimeout, function() {
                 process.exit(5);
             });
         }
