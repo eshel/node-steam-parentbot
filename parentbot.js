@@ -89,6 +89,16 @@ ParentBot.SteamWebApiKey = GetSteamApiKey;
 
 var prototype = ParentBot.prototype;
 
+// HACK
+function busySleep(time, callback) {
+    var stop = new Date().getTime();
+    while(new Date().getTime() < stop + time) {
+        ;
+    }
+    callback();
+}
+
+
 prototype.connect = function connectCallback() {
     this.steamClient.connect();
     this.logger.debug('Connecting to Steam...');
@@ -224,10 +234,10 @@ prototype._onLogOnResponse = function logOnResponseCallback(response) {
             process.exit(63);
         } else if (response.eresult === 5) {
             this.logger.warn('Received logon EResult=5 (rate limiting?). Waiting in order to restart');
-            setTimeout(function() {
+            busySleep(30000, function() {
                 this.logger.warn('restart timeout expired, exiting');
                 process.exit(5);
-            }, 30000);
+            });
         }
     }
 }
