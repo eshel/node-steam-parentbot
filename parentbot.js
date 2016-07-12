@@ -222,6 +222,9 @@ prototype._onLogOnResponse = function logOnResponseCallback(response) {
         if(response.eresult === 63) {
             this.logger.warn('Please provide the steamguard code sent to your email at ' + response.email_domain);
             process.exit(63);
+        } else if (response.eresult === 5) {
+            this.logger.warn('Received logon EResult=5 (rate limiting?). Exiting');
+            process.exit(5);
         }
     }
 }
