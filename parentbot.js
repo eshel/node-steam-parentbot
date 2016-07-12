@@ -145,8 +145,8 @@ prototype.logOn = function logOnCallback() {
 }
 
 prototype._onError = function errorCallback() {
-    this.logger.error('Disconnected from Steam, reconnecting...');
-    this.connect();
+    this.logger.error('Disconnected from Steam');
+    process.exit(1);
 }
 
 prototype._onConnected = function connectedCallback() {
@@ -223,8 +223,11 @@ prototype._onLogOnResponse = function logOnResponseCallback(response) {
             this.logger.warn('Please provide the steamguard code sent to your email at ' + response.email_domain);
             process.exit(63);
         } else if (response.eresult === 5) {
-            this.logger.warn('Received logon EResult=5 (rate limiting?). Exiting');
-            process.exit(5);
+            this.logger.warn('Received logon EResult=5 (rate limiting?). Waiting in order to restart');
+            setTimeout(function() {
+                this.logger.warn('restart timeout expired, exiting');
+                process.exit(5);
+            }, 30000);
         }
     }
 }
@@ -247,8 +250,9 @@ prototype.finalizeTwoFactor = function finalizeCallback(res) {
 }
 
 prototype._onLoggedOff = function logedOffCallback() {
-    this.logger.error('Logged off of Steam, logging in again...');
-    this.logOn();
+    this.logger.error('Logged off of Steam, exiting...');
+    process.exit(1);
+    //this.logOn();
 }
 
 prototype._onUpdateMachineAuth = function updateMachineAuthCallback(response, callback) {
